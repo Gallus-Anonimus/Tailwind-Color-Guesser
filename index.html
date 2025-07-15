@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tailwind Color Guessing Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen flex flex-col items-center justify-start p-4 text-gray-200">
+<h1 class="text-white text-3xl font-bold mb-6">Guess the Tailwind Color</h1>
+
+<div
+        id="color-box"
+        class="w-48 h-48 rounded-lg shadow-lg mb-6 border border-gray-700"
+        aria-label="Color to guess"
+></div>
+
+<form
+        id="guess-form"
+        class="flex flex-col items-center space-y-4 w-full max-w-xs"
+>
+  <input
+          list="color-options"
+          type="text"
+          id="guess-input"
+          placeholder="Enter color-shade (e.g. teal-400)"
+          class="w-full bg-gray-800 px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-200 placeholder-gray-400"
+          autocomplete="off"
+          spellcheck="false"
+          required
+  />
+  <datalist id="color-options"></datalist>
+  <button
+          type="submit"
+          class="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-800 transition"
+  >
+    Guess
+  </button>
+</form>
+
+<p id="feedback" class="mt-4 text-lg font-semibold min-h-[1.5rem]"></p>
+
+<p class="mt-2 text-gray-300 font-medium">
+  Current Streak: <span id="streak-count" class="text-blue-400">0</span>
+</p>
+
+<button
+        id="next-btn"
+        class="mt-6 px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition hidden"
+>
+  Next Color
+</button>
+
+<button
+        id="toggle-colors-btn"
+        class="mt-8 px-6 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition"
+>
+  Show All Available Colors
+</button>
+
+<div
+        id="all-colors-container"
+        class="mt-4 max-w-5xl w-full grid grid-cols-10 gap-2 p-2 rounded-lg border border-gray-700 bg-gray-800 hidden text-gray-200"
+></div>
+
+<script src="index.js"></script>
+</body>
+</html>
