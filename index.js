@@ -6,6 +6,7 @@ const nextBtn = document.getElementById("next-btn");
 const streakCountEl = document.getElementById("streak-count");
 const toggleColorsBtn = document.getElementById("toggle-colors-btn");
 const allColorsContainer = document.getElementById("all-colors-container");
+const clickInstruction = document.getElementById("click-instruction");
 const datalist = document.getElementById("color-options");
 const colorNames = ["slate","gray","zinc","neutral","stone","red","orange","amber","yellow","lime","green","emerald","teal","cyan","sky","blue","indigo","violet","purple","fuchsia","pink","rose",];
 const shades = ["50","100","200","300","400","500","600","700","800","900",];
@@ -16,7 +17,10 @@ let streak = 0;
 function pickRandomColor() {
     const randomColor =
         colorNames[Math.floor(Math.random() * colorNames.length)];
-    const randomShade = shades[Math.floor(Math.random() * shades.length)];
+
+
+    const shades2 = ["50","100","100","200","200","300","300","400","400","500","500","600","6000","700","700","800","800","900","900"];
+    const randomShade = shades2[Math.floor(Math.random() * shades2.length)];
 
     return `${randomColor}-${randomShade}`;
 }
@@ -31,30 +35,9 @@ function normalizeInput(input) {
     return input.trim().toLowerCase();
 }
 
-function splitColorShade(str) {
-    const parts = str.split("-");
-    if (parts.length < 2) return [str, ""];
-    const shade = parts.pop();
-    const colorName = parts.join("-");
-    return [colorName, shade];
-}
-
-function startNewRound() {
-    feedback.textContent = "";
-    guessInput.value = "";
-    guessInput.disabled = false;
-    guessInput.focus();
-    nextBtn.classList.add("hidden");
-
-    const newColor = pickRandomColor();
-    setColor(newColor);
-}
-
-guessForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const guessRaw = guessInput.value;
-    const guess = normalizeInput(guessRaw);
-
+function handleColorGuess(guess) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     if (guess === currentColor) {
         streak++;
         streakCountEl.textContent = streak;
@@ -83,6 +66,32 @@ guessForm.addEventListener("submit", (e) => {
     streakCountEl.textContent = streak;
     feedback.classList.remove("text-green-400");
     feedback.classList.add("text-red-600");
+}
+
+function splitColorShade(str) {
+    const parts = str.split("-");
+    if (parts.length < 2) return [str, ""];
+    const shade = parts.pop();
+    const colorName = parts.join("-");
+    return [colorName, shade];
+}
+
+function startNewRound() {
+    feedback.textContent = "";
+    guessInput.value = "";
+    guessInput.disabled = false;
+    guessInput.focus();
+    nextBtn.classList.add("hidden");
+
+    const newColor = pickRandomColor();
+    setColor(newColor);
+}
+
+guessForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const guessRaw = guessInput.value;
+    const guess = normalizeInput(guessRaw);
+    handleColorGuess(guess);
 });
 
 nextBtn.addEventListener("click", () => {
@@ -92,10 +101,21 @@ nextBtn.addEventListener("click", () => {
 toggleColorsBtn.addEventListener("click", () => {
     if (allColorsContainer.classList.contains("hidden")) {
         allColorsContainer.classList.remove("hidden");
+        clickInstruction.classList.remove("hidden");
         toggleColorsBtn.textContent = "Hide All Available Colors";
     } else {
         allColorsContainer.classList.add("hidden");
+        clickInstruction.classList.add("hidden");
         toggleColorsBtn.textContent = "Show All Available Colors";
+    }
+});
+
+
+allColorsContainer.addEventListener("click", (e) => {
+    const colorSquare = e.target.closest('[data-color]');
+    if (colorSquare && !guessInput.disabled) {
+        const clickedColor = colorSquare.dataset.color;
+        handleColorGuess(clickedColor);
     }
 });
 
@@ -110,11 +130,12 @@ function populateAllColors() {
     colors.forEach((color) => {
         const colorDiv = document.createElement("div");
         colorDiv.className =
-            `flex flex-col items-center justify-center cursor-default select-none`;
+            `flex flex-col items-center justify-center cursor-pointer select-none hover:scale-105 transition-transform`;
 
         const square = document.createElement("div");
-        square.className = `w-10 h-10 rounded shadow-sm mb-1 bg-${color} border border-gray-700`;
-        square.title = color;
+        square.className = `w-10 h-10 rounded shadow-sm mb-1 bg-${color} border border-gray-700 hover:border-gray-500 transition-colors`;
+        square.title = `Click to guess: ${color}`;
+        square.dataset.color = color;
 
         const label = document.createElement("div");
         label.className = "text-xs text-center text-gray-200";
